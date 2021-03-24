@@ -49,6 +49,7 @@ def start_message(message):
             cursorclass=DictCursor
     )) as connection:
         with connection.cursor() as cursor:
+            ban_time = timedelta(minutes=20)
             query = """
                         INSERT INTO telegram_user (chat_id, banned_time) VALUES (%s, %s)
                         ON DUPLICATE KEY UPDATE count_time=count_time+1
@@ -63,10 +64,30 @@ def start_message(message):
                     """
             cursor.execute(query)
             for row in cursor:
-                if row['chat_id'] == str(message.chat.id) and row['count_time'] < 10:
+                if row['chat_id'] == str(message.chat.id) and row['count_time'] <= 10:
                     print(row['count_time'])
+                elif row['chat_id'] == str(message.chat.id) and row['count_time'] > 10:
+                    with connection.cursor() as cursor:
+                        query = """
+                                    INSERT INTO telegram_user (chat_id, banned_time) VALUES (%s, %s)
+                                    ON DUPLICATE KEY UPDATE banned_time=%s
+                                """
+                        data_employee = (str(message.chat.id), datetime.now(), datetime.now() + ban_time)
+                        cursor.execute(query, data_employee)
+                        connection.commit()
+                        print('fds')
+                    print('Вы были забанены до ' + str(row['banned_time']))
 
-
+                if row['chat_id'] == str(message.chat.id) and row['banned_time'] < datetime.now():
+                    with connection.cursor() as cursor:
+                        query = """
+                                    INSERT INTO telegram_user (chat_id, banned_time) VALUES (%s, %s)
+                                    ON DUPLICATE KEY UPDATE count_time=%s
+                                """
+                        data_employee = (str(message.chat.id), datetime.now(), row['count_time'] + 1)
+                        cursor.execute(query, data_employee)
+                        connection.commit()
+                        print('fds')
 
         with connection.cursor() as cursor:
             query = """
