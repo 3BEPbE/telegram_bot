@@ -75,19 +75,19 @@ def start_message(message):
                         data_employee = (str(message.chat.id), datetime.now(), datetime.now() + ban_time)
                         cursor.execute(query, data_employee)
                         connection.commit()
-                        print('fds')
+                        print('каунт больше 10')
                     print('Вы были забанены до ' + str(row['banned_time']))
 
-                if row['chat_id'] == str(message.chat.id) and row['banned_time'] < datetime.now():
-                    with connection.cursor() as cursor:
-                        query = """
-                                    INSERT INTO telegram_user (chat_id, banned_time) VALUES (%s, %s)
-                                    ON DUPLICATE KEY UPDATE count_time=%s
-                                """
-                        data_employee = (str(message.chat.id), datetime.now(), row['count_time'] + 1)
-                        cursor.execute(query, data_employee)
-                        connection.commit()
-                        print('fds')
+                # if row['chat_id'] == str(message.chat.id) and row['banned_time'] > datetime.now():
+                #     with connection.cursor() as cursor:
+                #         query = """
+                #                     INSERT INTO telegram_user (chat_id, banned_time) VALUES (%s, %s)
+                #                     ON DUPLICATE KEY UPDATE count_time=%s
+                #                 """
+                #         data_employee = (str(message.chat.id), datetime.now(), 0)
+                #         cursor.execute(query, data_employee)
+                #         connection.commit()
+                #         print('очищен от бана')
 
         with connection.cursor() as cursor:
             query = """
@@ -168,40 +168,52 @@ def set_language(message):
                         cursor.execute(query, data_employee)
                         connection.commit()
 
-        with closing(pymysql.connect(
-                host='94.158.54.61',
-                user='nick',
-                password='R2CLpX@erQJwiPg',
-                db='comnet',
-                charset='utf8mb4',
-                cursorclass=DictCursor
-        )) as connection:
-            with connection.cursor() as cursor:
-                query = """
-                    SELECT size,price FROM comnet.tariffs ORDER BY created_at DESC; 
-                """
-                cursor.execute(query)
-                for row in cursor:
-                    bot.send_message(message.chat.id, 'Название: ' + row['size'] + '  Цена:' + row['price'])
-                    print(row)
+        bot.send_photo(message.chat.id, 'https://serv.comnet.uz/telegram/tariffs/LMINI-min.jpg')
+        bot.send_photo(message.chat.id, 'https://serv.comnet.uz/telegram/tariffs/L+-min.jpg')
+        bot.send_photo(message.chat.id, 'https://serv.comnet.uz/telegram/tariffs/M+-min.jpg')
+        bot.send_photo(message.chat.id, 'https://serv.comnet.uz/telegram/tariffs/S+-min.jpg')
+        bot.send_photo(message.chat.id, 'https://serv.comnet.uz/telegram/tariffs/XL+-min.jpg')
+
+        # with closing(pymysql.connect(
+        #         host='94.158.54.61',
+        #         user='nick',
+        #         password='R2CLpX@erQJwiPg',
+        #         db='comnet',
+        #         charset='utf8mb4',
+        #         cursorclass=DictCursor
+        # )) as connection:
+        #     with connection.cursor() as cursor:
+        #         query = """
+        #             SELECT size,price FROM comnet.tariffs ORDER BY created_at DESC;
+        #         """
+        #         cursor.execute(query)
+        #         for row in cursor:
+        #             bot.send_message(message.chat.id, 'Название: ' + row['size'] + '  Цена:' + row['price'])
+        #             print(row)
 
     elif message.text.lower() == 'новости':
-        with closing(pymysql.connect(
-                host='94.158.54.61',
-                user='nick',
-                password='R2CLpX@erQJwiPg',
-                db='comnet',
-                charset='utf8mb4',
-                cursorclass=DictCursor
-        )) as connection:
-            with connection.cursor() as cursor:
-                query = """
-                    SELECT title_ru, short_text_ru FROM comnet.news ORDER BY created_at DESC LIMIT 3;
-                """
-                cursor.execute(query)
-                for row in cursor:
-                    bot.send_message(message.chat.id, row['title_ru'] + ':' + row['short_text_ru'])
-                    print(row['short_text_ru'])
+        bot.send_photo(message.chat.id, 'https://serv.comnet.uz/telegram/akci/1.jpeg')
+        bot.send_photo(message.chat.id, 'https://serv.comnet.uz/telegram/akci/2.jpeg')
+        bot.send_photo(message.chat.id, 'https://serv.comnet.uz/telegram/akci/3.jpeg')
+        bot.send_photo(message.chat.id, 'https://serv.comnet.uz/telegram/akci/4.jpeg')
+        bot.send_photo(message.chat.id, 'https://serv.comnet.uz/telegram/akci/5.jpeg')
+        bot.send_photo(message.chat.id, 'https://serv.comnet.uz/telegram/akci/6.jpeg')
+        # with closing(pymysql.connect(
+        #         host='94.158.54.61',
+        #         user='nick',
+        #         password='R2CLpX@erQJwiPg',
+        #         db='comnet',
+        #         charset='utf8mb4',
+        #         cursorclass=DictCursor
+        # )) as connection:
+        #     with connection.cursor() as cursor:
+        #         query = """
+        #             SELECT title_ru, short_text_ru FROM comnet.news ORDER BY created_at DESC LIMIT 3;
+        #         """
+        #         cursor.execute(query)
+        #         for row in cursor:
+        #             bot.send_message(message.chat.id, row['title_ru'] + ':' + row['short_text_ru'])
+                    # print(row['short_text_ru'])
 
 # @bot.message_handler(commands=['start'])
 # def start_message(message):

@@ -1,4 +1,4 @@
-#!/Users/nicksimmons/djangoProjects/bot/venv/bin/python
+#!/home/xlight/Документы/bot/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
